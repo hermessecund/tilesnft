@@ -13,7 +13,7 @@ export const chainConst = "polygon";
 export const primaryColorConst = "white";
 
 // Choose between "light" and "dark" mode
-export const themeConst = "dark";
+export const themeConst = "light";
 
 // Gasless relayer configuration options
 export const relayerUrlConst = ""; // OpenZeppelin relayer URL
