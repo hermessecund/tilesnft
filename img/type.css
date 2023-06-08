@@ -1,0 +1,79 @@
+h1 {  font-family: Georgia, "Times New Roman", Times, serif; font-size: 28px; color: #CCCCCC; font-weight: normal; margin-top: 12px; margin-right: 0px; margin-bottom: 12px; margin-left: 0px}
+.contentparagraph {  font-family: Arial, Helvetica, sans-serif; font-size: 16px; color: #8C8684; margin-top: 12px; margin-right: 0px; margin-bottom: 12px; margin-left: 0px; text-align: justify; line-height: 20px}
+b {  color: #848A7B}
+a:link {  color: #666666}
+a:visited {  color: #666666}
+a:hover {  color: #333333}
+a:active {  color: #666666}
+.heading {  font-family: Georgia, "Times New Roman", Times, serif; font-size: 28px; color: #000033; text-shadow: 1px 1px 1px #00FFFF;}
+.mainmenu{  font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #333333; background-color: #D6D7D6}
+.sidebar {  font-family: "Comic Sans MS", Arial, sans-serif; font-size: 12px; color: #666666}
+
+
+
+.selmenu {
+  width: 300px;
+  height:40px;
+  text-align: left;
+  font-size: 1.5 vw;
+  padding: 1px 1px;
+  margin-top: 5px;
+  border-radius: 1px;
+  border: 1px solid #00ffff;
+  color:#000033;
+  transition: transform 0.7s ease;
+  font-family: "Space Mono", monospace;
+	font-size: 16px;
+   
+}
+.selmenu:hover {
+	border-radius: 1px;
+  color:#000033;
+  	box-shadow: 1px 1px 2px rgb(229, 0, 250);
+	border: 1px solid #00ffff;
+	  transition: transform 0.7s ease;
+	  font-family: "Space Mono", monospace;
+	font-size: 16px;
+
+}
+
+.selmenu:hover {
+	border-radius: 1px;
+    color:#000033;
+  	box-shadow: 1px 1px 2px rgb(229, 0, 250);
+	border: 1px solid #00ffff;
+    transition: transform 0.7s ease;
+	font-size: 16px;
+
+}
+
+.bgnone{
+background-color:#33333300;
+
+}
+
+.selzone {
+  width: 300px;
+  height:20px;
+  text-align: left;
+  font-size: 1.2 vw;
+  margin-top: 0px;
+  border-radius: 20px;
+  border: 1px solid #00ffff;
+  color:#000033;
+  transition: transform 0.7s ease;
+  background-color: #CC330000;
+   
+}.selzone:hover {
+  width: 300px;
+  height:20px;
+  text-align: left;
+  font-size: 1.2 vw;
+  margin-top: 0px;
+  border-radius: 10px;
+  border: 1px solid #00ffff;
+  color: #0000CC;
+  transition: transform 0.7s ease;
+  box-shadow: 1px 1px 2px rgb(229, 0, 250);
+
+}

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Map Grid Example</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+  <style>
+   /* Modal */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .modal-content {
+    max-width: 500px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .modal-show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .modal-content-show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Button */
+  .modal-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+
+  .modal-btn:hover {
+    background-color: #0056b3;
+  }
+
+  /* Fade Out Animation */
+  .fade-out {
+    animation: fadeOut 1s ease forwards;
+  }
+
+  @keyframes fadeOut {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+
+
+  .modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    max-width: 80%;
+	height:200px;
+  }
+
+  .modal-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  .modal-content {
+    margin-bottom: 20px;
+  }
+
+  .modal-close {
+    text-align: right;
+    cursor: pointer;
+  }
+    #map-container {
+      width: 100%;
+      overflow-x: hidden;
+    }
+    #map {
+      height: 700px;
+      margin: 0 auto;
+    }
+    .tile-label {
+      position: absolute;
+      font-size: 12px;
+      font-weight: bold;
+      color: white;
+      text-align: center;
+      width: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+	 .header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: rgba(242, 242, 242, 0.2);
+      padding: 20px;
+      text-align: center;
+      transition: opacity 0.3s ease;
+      opacity: 0;
+    }
+
+    .header.show {
+      opacity: 1;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .header p {
+      margin: 10px 0;
+    }
+
+    .header a {
+      margin-right: 10px;
+      color: #007bff;
+      text-decoration: none;
+    }
+  </style>
+</head>
+  <div class="header">
+    <h1>Map Grid Example</h1>
+    <p>Useful Links:</p>
+    <a href="#">Documentation</a>
+    <a href="#">API Reference</a>
+    <a href="#">Tutorials</a>
+  </div>
+<body>
+  <div id="map-container">
+    <div id="map"></div>
+  </div>
+  <div id="modal-overlay" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-close" onClick="hideModal()">Close</div>
+      <div id="modal-title" class="modal-title"></div>
+      <div id="modal-content" class="modal-content"></div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+  <script>
+  
+  function showModal(tileNumber, countries, description) {
+    var modalOverlay = document.getElementById('modal-overlay');
+    var modalTitle = document.getElementById('modal-title');
+    var modalContent = document.getElementById('modal-content');
+
+    modalTitle.textContent = 'Tile Number: ' + tileNumber + ' Countries:';
+  modalContent.textContent = countries + '\n\n' + description;
+    modalOverlay.style.display = 'block';
+
+    // Show the modal with fade-in animation
+    modalOverlay.classList.add('modal-show');
+    modalContent.classList.add('modal-content-show');
+
+  }
+
+  function hideModal() {
+    var modalOverlay = document.getElementById('modal-overlay');
+    var modalContent = document.getElementById('modal-content');
+
+    // Hide the modal with fade-out animation
+    modalOverlay.classList.remove('modal-show');
+    modalContent.classList.remove('modal-content-show');
+
+    // Remove the modal from the DOM after the fade-out animation ends
+    setTimeout(function() {
+      modalOverlay.style.display = 'none';
+    }, 300);
+  }
+
+// Initialize the map with Mercator projection
+var map = L.map('map', {
+  crs: L.CRS.EPSG3857
+}).setView([0, 0], 2);
+
+// Add OpenStreetMap tiles with Mercator projection to the map
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 18,
+  attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+// Define the number of rows and columns in the grid
+var rows = 25;
+var cols = 24;
+
+
+  // Calculate the latitude and longitude bounds for the grid
+  var maxLat = 85.0511287798066;
+  var minLat = -85.0511287798066;
+  var maxLng = 190.9999999999999;
+  var minLng = -168.9769;
+  var latStep = (maxLat - minLat) / rows;
+  var lngStep = (maxLng - minLng) / cols;
+
+
+// Draw the grid tiles
+for (var i = 0; i < rows; i++) {
+  var lat1 = maxLat - i * latStep;
+  var lat2 = maxLat - (i + 1) * latStep;
+
+  for (var j = 0; j < cols; j++) {
+    var lng1 = minLng + j * lngStep;
+    var lng2 = minLng + (j + 1) * lngStep;
+
+    var tileBounds = L.latLngBounds([[lat1, lng1], [lat2, lng2]]);
+
+    // Calculate color gradient
+    var colorIndex = Math.floor(j / 2);
+    var startColor = [0, 0, 0]; // Dark color
+    var endColor = [255, 165, 0]; // Orange color
+    var step = 1 / (cols / 2 - 1);
+    var color = [];
+    for (var k = 0; k < 3; k++) {
+      var channel = Math.round(startColor[k] + colorIndex * step * (endColor[k] - startColor[k]));
+      color.push(channel);
+    }
+
+    L.rectangle(tileBounds, { color: 'rgb(' + color.join(',') + ')' }).addTo(map);
+
+    var tileCenter = tileBounds.getCenter();
+    var tileLabel = L.divIcon({ className: 'tile-label', html: `${i * cols + j + 1}` });
+    var tileMarker = L.marker(tileCenter, { icon: tileLabel }).addTo(map);
+
+    tileMarker.on('click', function () {
+      var marker = this;
+      var latLng = marker.getLatLng();
+      var apiUrl = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latLng.lat}&lon=${latLng.lng}`;
+
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          var tileNumber = marker.getIcon().options.html;
+          var countries = data.address.country;
+          showModal(tileNumber, countries, '');
+          map.setView(marker.getLatLng(), map.getMaxZoom() / 2.5);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    });
+  }
+}
+
+  </script>
+</body>
+</html>
